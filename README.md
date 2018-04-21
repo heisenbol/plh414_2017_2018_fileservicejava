@@ -1,5 +1,5 @@
 # plh414_2017_2018_fileservicejava
-plh414 2017/2018 File Service Sample Java
+plh414 2017/2018 File Service Sample Java demonstrating publication to Zookeeper instance using ephemeral node
 
 Needs external servlet-api.jar to compile
 
@@ -14,6 +14,7 @@ slf4j-api.jar from /usr/share/java/slf4j-api.jar
 
 Sample deployment script
 
+```
 #!/bin/bash
 if [ "$#" -ne 9 ]; then
     echo "Illegal number of parameters"
@@ -39,3 +40,4 @@ cd $DIR/WEB-INF \
 && ssh root@$5 "chown -R tomcat8:tomcat8 /var/lib/tomcat8/webapps"
 cd $DIR
 #http://snf-814985.vm.okeanos.grnet.gr:8080/fileservicejava/file/aaa.png
+```
