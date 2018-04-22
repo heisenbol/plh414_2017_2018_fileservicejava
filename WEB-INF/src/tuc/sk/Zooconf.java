@@ -26,10 +26,10 @@ public class Zooconf implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         System.err.println("Fileservice Context start initialization");
         initConfProperties(sce.getServletContext());
-
+		Zooconf instance = getInstance();
 		try {
-			this.zk = this.zooConnect();
-			this.publishService();
+			instance.zk = instance.zooConnect();
+			instance.publishService();
 		}
 		catch (InterruptedException ex) {
 			System.err.println("init InterruptedException");
@@ -41,9 +41,10 @@ public class Zooconf implements ServletContextListener {
 
     public void contextDestroyed(ServletContextEvent sce) {
         System.err.println("Fileservice Context destroyed");
+        Zooconf instance = getInstance();
 		try {
-			if (zk != null) {
-				zk.close();
+			if (instance.zk != null) {
+				instance.zk.close();
 			}
 		}
 		catch ( InterruptedException ex) {
@@ -58,11 +59,14 @@ public class Zooconf implements ServletContextListener {
 		return zooConfInstance;
 	}
 	
+	public ZooKeeper getZooConnection() {
+		Zooconf instance = getInstance();
+		return instance.zk;
+	}
 	public Properties getServiceConfig() {
 		Zooconf instance = getInstance();
 		return instance.serviceConfig;
 	}
-
    	private void publishService() {
 		// create ephemeral node to make the availability of this file service public
 		Zooconf instance = getInstance();
@@ -83,7 +87,7 @@ public class Zooconf implements ServletContextListener {
 			data.put("CONTEXT", instance.serviceConfig.getProperty("CONTEXT"));
 			
 //			zk.create("/FS/xxxxx"+this.serviceConfig.getProperty("ID"), ("dataxxxxxx").getBytes("UTF-8"), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);	
-			zk.create("/plh414/fileservices/"+instance.serviceConfig.getProperty("ID"), data.toString().getBytes("UTF-8"), Arrays.asList(acl), CreateMode.EPHEMERAL);	
+			instance.zk.create("/plh414/fileservices/"+instance.serviceConfig.getProperty("ID"), data.toString().getBytes("UTF-8"), Arrays.asList(acl), CreateMode.EPHEMERAL);	
 		}	
 		catch (KeeperException ex) {
 			System.err.println("create destroy KeeperException");
@@ -125,8 +129,9 @@ public class Zooconf implements ServletContextListener {
 	}
 	private ZooKeeper zooConnect() throws IOException,InterruptedException {
 		System.err.println("start zooConnect");
-		Zooconf instance = getInstance();
-		ZooKeeper zk = new ZooKeeper(instance.serviceConfig.getProperty("ZOOKEEPER_HOST"), 3000, new Watcher() {
+		
+		Properties config = getServiceConfig();
+		ZooKeeper zk = new ZooKeeper(config.getProperty("ZOOKEEPER_HOST"), 3000, new Watcher() {
 			@Override
 			public void process(WatchedEvent we) {
 				if (we.getState() == KeeperState.SyncConnected) {
@@ -136,7 +141,7 @@ public class Zooconf implements ServletContextListener {
 		});
 		connectedSignal.await();
 		
-		zk.addAuthInfo("digest", new String(instance.serviceConfig.getProperty("ZOOKEEPER_USER")+":"+instance.serviceConfig.getProperty("ZOOKEEPER_PASSWORD")).getBytes()); 
+		zk.addAuthInfo("digest", new String(config.getProperty("ZOOKEEPER_USER")+":"+config.getProperty("ZOOKEEPER_PASSWORD")).getBytes()); 
 		
 		System.err.println("finished zooConnect");
 
