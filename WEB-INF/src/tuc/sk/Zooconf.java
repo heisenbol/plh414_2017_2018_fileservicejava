@@ -59,11 +59,11 @@ public class Zooconf implements ServletContextListener {
 		return zooConfInstance;
 	}
 	
-	public ZooKeeper getZooConnection() {
+	public static ZooKeeper getZooConnection() {
 		Zooconf instance = getInstance();
 		return instance.zk;
 	}
-	public Properties getServiceConfig() {
+	public static Properties getServiceConfig() {
 		Zooconf instance = getInstance();
 		return instance.serviceConfig;
 	}
