@@ -19,7 +19,7 @@ Sample deployment script
 if [ "$#" -ne 9 ]; then
     echo "Illegal number of parameters"
     echo "deploy.sh FSID ZOOKEEPER_HOST ZOOKEEPER_USERNAME ZOOKEEPER_PASSWORD SERVERHOSTNAME SERVER_PORT SERVER_SCHEME HMACKEY CONTEXT"
-    echo "e.g. ../deploy.sh  FSX snf-xxxxx.vm.okeanos.grnet.gr username password snf-yyyyyy.vm.okeanos.grnet.gr 8080 http KEY fileservicejava"
+    echo "e.g. ../deploy.sh  FSX snf-814985.vm.okeanos.grnet.gr username password snf-814985.vm.okeanos.grnet.gr 8080 http 7vjTsO0IhSZsNA6ze37Dk/xXw2nphFM9ZAMUkwXgaAA= fileservicejava"
     exit -1
 fi
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -29,6 +29,7 @@ echo ID=$1 > "$DIR/WEB-INF/config.properties"
 echo ZOOKEEPER_HOST=$2 >> "$DIR/WEB-INF/config.properties"
 echo ZOOKEEPER_USER=$3 >> "$DIR/WEB-INF/config.properties"
 echo ZOOKEEPER_PASSWORD=$4 >> "$DIR/WEB-INF/config.properties"
+echo SERVERHOSTNAME=$5 >> "$DIR/WEB-INF/config.properties"
 echo SERVER_PORT=$6 >> "$DIR/WEB-INF/config.properties"
 echo SERVER_SCHEME=$7 >> "$DIR/WEB-INF/config.properties"
 echo HMACKEY=$8 >> "$DIR/WEB-INF/config.properties"
